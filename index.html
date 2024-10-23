@@ -1,20 +1,80 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AJAX Project</title>
-  <link rel="icon" href="images/favicon.ico">
-  <link rel="stylesheet" href="css/reset.css">
-  <link rel="stylesheet" href="css/layout.css">
-  <link rel="stylesheet" href="css/styles.css">
-</head>
-<body>
-  <header>
-  </header>
-  <main>
-  </main>
-  <script src="js/data.js"></script>
-  <script src="js/main.js"></script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AJAX Project</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Shadows+Into+Light&display=swap"
+      rel="stylesheet" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link rel="icon" href="images/favicon.ico" />
+    <link rel="stylesheet" href="css/reset.css" />
+    <link rel="stylesheet" href="css/layout.css" />
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <header>
+      <div class="header-container">
+        <h1>Shelf Reflection</h1>
+        <a href="#">Home</a>
+        <a href="#">My Reviews</a>
+        <a href="#" id="new-button">New</a>
+      </div>
+    </header>
+    <main>
+      <div data-view="review-form">
+        <form>
+          <div class="row">
+            <div class="column-full">
+              <h1>New Review</h1>
+            </div>
+          </div>
+          <div class="row">
+            <div class="column-half">
+              <img src="images/placeholder-image-square.jpg" />
+            </div>
+            <div class="column-half">
+              <div class="input-group">
+                <label class="bookTitle" for="bookTitle">Book Title</label>
+                <input type="text" id="bookTitle" name="bookTitle" required />
+              </div>
+              <div class="input-group">
+                <label class="author" for="author">Author</label>
+                <input type="text" id="author" name="author" required />
+              </div>
+              <div class="input-group" id="photo-url">
+                <label for="photo">Photo URL</label>
+                <input type="text" id="photo" name="photo" required />
+              </div>
+              <label class="rating" for="rating">Rating</label>
+              <div class="stars">
+                <i id="one" class="fa-regular fa-star" aria-required="true"></i>
+                <i id="two" class="fa-regular fa-star"></i>
+                <i id="three" class="fa-regular fa-star"></i>
+                <i id="four" class="fa-regular fa-star"></i>
+                <i id="five" class="fa-regular fa-star"></i>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="column-full">
+              <label for="review">Review</label>
+              <textarea id="review" name="review" required></textarea>
+              <button type="submit">SAVE</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </main>
+    <script src="js/data.js"></script>
+    <script src="js/main.js"></script>
+  </body>
 </html>
