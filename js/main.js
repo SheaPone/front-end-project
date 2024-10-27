@@ -85,6 +85,7 @@ function submit(event) {
   data.reviews.unshift(newReview);
   $ul.prepend(renderReview(newReview));
   writeReviews();
+  toggleNoReviews();
   viewSwap('reviews');
   $img.src = originalSrc;
   $one.className = 'fa-regular fa-star';
@@ -96,7 +97,7 @@ function submit(event) {
   formElementsValues.reset();
 }
 formElementsValues.addEventListener('submit', submit);
-//Create DOM element function
+// Create DOM element function
 function renderReview(review) {
   const $li = document.createElement('li');
   $li.className = 'row';
@@ -133,21 +134,46 @@ document.addEventListener('DOMContentLoaded', () => {
     const dataReview = data.reviews[i];
     $ul.appendChild(renderReview(dataReview));
   }
+  viewSwap(data.view);
+  toggleNoReviews();
 });
-//Function to switch the view
-//Will need to add homepage
+// Function to switch the view
 const $reviewForm = document.querySelector('#review-form');
 const $reviews = document.querySelector('#reviews');
+const $home = document.querySelector('#home');
 if (!$reviewForm || !$reviews)
-  throw new Error('$reviews and $review-form query failed');
+  throw new Error('$reviews, $home, and $review-form query failed');
 function viewSwap(viewName) {
   if (viewName === 'reviews') {
     $reviews.className = 'view';
     $reviewForm.className = 'view hidden';
+    $home.className = 'view hidden';
   } else if (viewName === 'review-form') {
     $reviews.className = 'view hidden';
     $reviewForm.className = 'view';
+    $home.className = 'view hidden';
+  } else if (viewName === 'home') {
+    $reviews.className = 'view hidden';
+    $reviewForm.className = 'view hidden';
+    $home.className = 'view';
   }
   data.view = viewName;
   writeReviews();
 }
+const $reviewsMessage = document.querySelector('.reviews-message');
+if (!$reviewsMessage) throw new Error('$reviewsMessages query failed');
+function toggleNoReviews() {
+  if (data.reviews.length === 0) {
+    $reviewsMessage.className = 'entries no';
+  } else {
+    $reviewsMessage.className = 'entries yes';
+  }
+}
+const $newButton = document.querySelector('#new-button');
+const $reviewNav = document.querySelector('#review-nav');
+const $homeNav = document.querySelector('#home-nav');
+if (!$newButton || !$reviewNav || !$homeNav)
+  throw new Error('$newButton, $homeNav, and $reviewNav query failed');
+$newButton.addEventListener('click', () => viewSwap('review-form'));
+$reviewNav.addEventListener('click', () => viewSwap('reviews'));
+$homeNav.addEventListener('click', () => viewSwap('home'));
