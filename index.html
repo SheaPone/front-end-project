@@ -30,7 +30,7 @@
       </div>
     </header>
     <main>
-      <div data-view="review-form">
+      <div data-view="review-form" id="review-form" class="view hidden">
         <form>
           <div class="row">
             <div class="column-full">
@@ -72,6 +72,11 @@
             </div>
           </div>
         </form>
+      </div>
+      <div data-view="reviews" id="reviews" class="view">
+        <h1 class="reviews-header">My Reviews</h1>
+        <p class="reviews yes">No reviews have been submitted :(</p>
+        <ul></ul>
       </div>
     </main>
     <script src="js/data.js"></script>

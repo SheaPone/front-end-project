@@ -1,12 +1,12 @@
 /* exported data */
-// interface Data {
-// view: 'reviews' | 'review-form' | 'home';
-// reviews: Review[];
-// editing: null | Review;
-// nextReviewId: number;
-// }
+interface Data {
+  view: 'reviews' | 'review-form' | 'home';
+  reviews: Review[];
+  editing: null | Review;
+  nextReviewId: number;
+}
 
-const data: any = {
+let data: Data = {
   view: 'review-form',
   reviews: [],
   editing: null,
@@ -30,7 +30,9 @@ function readReviews(): any {
   }
 }
 
-// have to console both functions as receiving teh following error ''writeReviews' is defined but never used' and ''readReviews' is defined but never used
+data = readReviews();
+
+// have to console both functions as receiving the following error ''writeReviews' is defined but never used' and ''readReviews' is defined but never used
 
 console.log(writeReviews());
 console.log(readReviews());
