@@ -164,9 +164,9 @@ const $reviewsMessage = document.querySelector('.reviews-message');
 if (!$reviewsMessage) throw new Error('$reviewsMessages query failed');
 function toggleNoReviews() {
   if (data.reviews.length === 0) {
-    $reviewsMessage.className = 'entries no';
+    $reviewsMessage.className = 'reviews-message no';
   } else {
-    $reviewsMessage.className = 'entries yes';
+    $reviewsMessage.className = 'reviews-message yes';
   }
 }
 const $newButton = document.querySelector('#new-button');
