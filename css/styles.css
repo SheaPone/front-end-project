@@ -136,3 +136,12 @@ i {
   margin-bottom: 5rem;
   margin-top: 3rem;
 }
+
+.fa-pencil {
+  color: rgb(255, 86, 190);
+  float: right;
+}
+
+#search-button {
+  margin-right: 3rem;
+}
