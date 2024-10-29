@@ -15,12 +15,11 @@ interface Review {
   review: string;
   reviewId: number;
 }
-
+// Input Event listener for Photo Change
 const $photo = document.querySelector('#photo') as HTMLInputElement;
 const $img = document.querySelector('img') as HTMLImageElement;
 if (!$img || !$photo) throw new Error('Image query failed');
 
-// Input Event listener for Photo Change
 const originalSrc = $img.src;
 $img.dataset.originalSrc = originalSrc;
 
@@ -105,20 +104,55 @@ function submit(event: Event): void {
     review: $formElements.review.value,
     reviewId: data.nextReviewId,
   };
-  data.nextReviewId++;
-  data.reviews.unshift(newReview);
-  $ul!.prepend(renderReview(newReview));
-  writeReviews();
-  toggleNoReviews();
-  viewSwap('reviews');
-  $img.src = originalSrc;
-  $one!.className = 'fa-regular fa-star';
-  $two!.className = 'fa-regular fa-star';
-  $three!.className = 'fa-regular fa-star';
-  $four!.className = 'fa-regular fa-star';
-  $five!.className = 'fa-regular fa-star';
-  selectedRating = 0;
-  formElementsValues!.reset();
+  if (!data.editing) {
+    data.nextReviewId++;
+    data.reviews.unshift(newReview);
+    $ul!.prepend(renderReview(newReview));
+    writeReviews();
+    toggleNoReviews();
+    viewSwap('reviews');
+    $img.src = originalSrc;
+    $one!.className = 'fa-regular fa-star';
+    $two!.className = 'fa-regular fa-star';
+    $three!.className = 'fa-regular fa-star';
+    $four!.className = 'fa-regular fa-star';
+    $five!.className = 'fa-regular fa-star';
+    selectedRating = 0;
+    formElementsValues!.reset();
+  } else if (data.editing) {
+    for (let i = 0; i < data.reviews.length; i++) {
+      if (data.reviews[i].reviewId === data.editing.reviewId) {
+        newReview.reviewId = data.reviews[i].reviewId;
+        data.reviews[i] = newReview;
+        break;
+      }
+    }
+    const $allLi = document.querySelectorAll('li');
+    if (!$allLi) throw new Error('$allLi query failed!');
+    for (let i = 0; i < $allLi.length; i++) {
+      if (
+        Number($allLi[i].getAttribute('data-review-id')) ===
+        data.editing.reviewId
+      ) {
+        const originalLi = $allLi[i];
+        const newLi = renderReview(newReview);
+        $ul?.replaceChild(newLi, originalLi);
+        break;
+      }
+    }
+    data.editing = null;
+    writeReviews();
+    toggleNoReviews();
+    viewSwap('reviews');
+    $img.src = originalSrc;
+    $one!.className = 'fa-regular fa-star';
+    $two!.className = 'fa-regular fa-star';
+    $three!.className = 'fa-regular fa-star';
+    $four!.className = 'fa-regular fa-star';
+    $five!.className = 'fa-regular fa-star';
+    selectedRating = 0;
+    formElementsValues!.reset();
+  }
 }
 
 formElementsValues.addEventListener('submit', submit);
@@ -126,6 +160,7 @@ formElementsValues.addEventListener('submit', submit);
 // Create DOM element function
 function renderReview(review: Review): HTMLLIElement {
   const $li = document.createElement('li');
+  $li.setAttribute('data-review-id', `${review.reviewId}`);
   $li.className = 'row';
 
   const $div1 = document.createElement('div');
@@ -143,6 +178,10 @@ function renderReview(review: Review): HTMLLIElement {
   const $h3 = document.createElement('h3');
   $h3.textContent = review.bookTitle;
   $div2.appendChild($h3);
+
+  const $pencil = document.createElement('i');
+  $pencil.className = 'fa-solid fa-pencil';
+  $h3.appendChild($pencil);
 
   const $h4 = document.createElement('h4');
   $h4.textContent = review.author;
@@ -202,6 +241,7 @@ function viewSwap(viewName: 'reviews' | 'review-form' | 'home'): void {
 const $reviewsMessage = document.querySelector('.reviews-message');
 if (!$reviewsMessage) throw new Error('$reviewsMessages query failed');
 
+// Function to turn message regarding no reviews, on and off
 function toggleNoReviews(): void {
   if (data.reviews.length === 0) {
     $reviewsMessage!.className = 'reviews-message no';
@@ -210,12 +250,95 @@ function toggleNoReviews(): void {
   }
 }
 
+// Event Listeners on nav bar
 const $newButton = document.querySelector('#new-button');
 const $reviewNav = document.querySelector('#review-nav');
 const $homeNav = document.querySelector('#home-nav');
 if (!$newButton || !$reviewNav || !$homeNav)
   throw new Error('$newButton, $homeNav, and $reviewNav query failed');
 
-$newButton.addEventListener('click', () => viewSwap('review-form'));
+$newButton.addEventListener('click', () => {
+  viewSwap('review-form');
+  $img.src = originalSrc;
+  $one!.className = 'fa-regular fa-star';
+  $two!.className = 'fa-regular fa-star';
+  $three!.className = 'fa-regular fa-star';
+  $four!.className = 'fa-regular fa-star';
+  $five!.className = 'fa-regular fa-star';
+  selectedRating = 0;
+  formElementsValues.reset();
+});
 $reviewNav.addEventListener('click', () => viewSwap('reviews'));
 $homeNav.addEventListener('click', () => viewSwap('home'));
+
+// Edit Review Code
+function populateRating(ratingValue: number): void {
+  selectedRating = ratingValue;
+  if (ratingValue === 1) {
+    $one!.className = 'fa-solid fa-star';
+    $two!.className = 'fa-regular fa-star';
+    $three!.className = 'fa-regular fa-star';
+    $four!.className = 'fa-regular fa-star';
+    $five!.className = 'fa-regular fa-star';
+    selectedRating = 1;
+  } else if (ratingValue === 2) {
+    $one!.className = 'fa-solid fa-star';
+    $two!.className = 'fa-solid fa-star';
+    $three!.className = 'fa-regular fa-star';
+    $four!.className = 'fa-regular fa-star';
+    $five!.className = 'fa-regular fa-star';
+    selectedRating = 2;
+  } else if (ratingValue === 3) {
+    $one!.className = 'fa-solid fa-star';
+    $two!.className = 'fa-solid fa-star';
+    $three!.className = 'fa-solid fa-star';
+    $four!.className = 'fa-regular fa-star';
+    $five!.className = 'fa-regular fa-star';
+    selectedRating = 3;
+  } else if (ratingValue === 4) {
+    $one!.className = 'fa-solid fa-star';
+    $two!.className = 'fa-solid fa-star';
+    $three!.className = 'fa-solid fa-star';
+    $four!.className = 'fa-solid fa-star';
+    $five!.className = 'fa-regular fa-star';
+    selectedRating = 4;
+  } else if (ratingValue === 5) {
+    $one!.className = 'fa-solid fa-star';
+    $two!.className = 'fa-solid fa-star';
+    $three!.className = 'fa-solid fa-star';
+    $four!.className = 'fa-solid fa-star';
+    $five!.className = 'fa-solid fa-star';
+    selectedRating = 5;
+  }
+}
+
+function populateReview(review: Review): void {
+  const $formElements = formElementsValues?.elements as FormElements;
+  $formElements.bookTitle.value = review.bookTitle;
+  $formElements.author.value = review.author;
+  $formElements.photo.value = review.photo;
+  $img.src = review.photo;
+  $formElements.review.value = review.review;
+  populateRating(review.rating);
+}
+
+$ul.addEventListener('click', (event: Event) => {
+  const eventTarget = event.target as HTMLElement;
+  const elementName = eventTarget.tagName;
+  console.log(elementName);
+  if (elementName === 'I') {
+    const closestLi = eventTarget.closest('li');
+    if (closestLi) {
+      const editReview = closestLi.getAttribute('data-review-id');
+      const editableReview = Number(editReview);
+      for (let i = 0; i < data.reviews.length; i++) {
+        if (data.reviews[i].reviewId === editableReview) {
+          viewSwap('review-form');
+          const dataReview = data.reviews[i];
+          data.editing = dataReview;
+          populateReview(dataReview);
+        }
+      }
+    }
+  }
+});
