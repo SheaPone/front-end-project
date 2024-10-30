@@ -61,6 +61,7 @@ textarea {
 
 .stars {
   margin-left: 2.25rem;
+  cursor: pointer;
 }
 
 input {
@@ -77,6 +78,7 @@ button {
   padding: 0.4rem 0.75rem;
   margin-top: 3%;
   margin-right: 1rem;
+  cursor: pointer;
 }
 
 .reviews-message {
@@ -144,4 +146,22 @@ i {
 
 #search-button {
   margin-right: 3rem;
+}
+
+.delete-button {
+  color: red;
+  margin-top: 1.5rem;
+  display: block;
+  text-align: left;
+  margin-left: 1rem;
+}
+
+.dismiss-modal {
+  float: left;
+  background-color: gray;
+}
+
+.delete-review {
+  float: right;
+  background-color: red;
 }

@@ -111,13 +111,15 @@ function submit(event) {
         Number($allLi[i].getAttribute('data-review-id')) ===
         data.editing.reviewId
       ) {
-        let originalLi = $allLi[i];
+        const originalLi = $allLi[i];
         const newLi = renderReview(newReview);
         $ul?.replaceChild(newLi, originalLi);
         break;
       }
     }
     data.editing = null;
+    $reviewFormHeader.textContent = 'New Review';
+    $deleteButton.className = 'delete-button hidden';
     writeReviews();
     toggleNoReviews();
     viewSwap('reviews');
@@ -201,7 +203,7 @@ function viewSwap(viewName) {
 }
 const $reviewsMessage = document.querySelector('.reviews-message');
 if (!$reviewsMessage) throw new Error('$reviewsMessages query failed');
-//Function to turn message regarding no reviews, on and off
+// Function to turn message regarding no reviews, on and off
 function toggleNoReviews() {
   if (data.reviews.length === 0) {
     $reviewsMessage.className = 'reviews-message no';
@@ -209,7 +211,7 @@ function toggleNoReviews() {
     $reviewsMessage.className = 'reviews-message yes';
   }
 }
-//Event Listeners on nav bar
+// Event Listeners on nav bar
 const $newButton = document.querySelector('#new-button');
 const $reviewNav = document.querySelector('#review-nav');
 const $homeNav = document.querySelector('#home-nav');
@@ -224,11 +226,17 @@ $newButton.addEventListener('click', () => {
   $four.className = 'fa-regular fa-star';
   $five.className = 'fa-regular fa-star';
   selectedRating = 0;
+  $reviewFormHeader.textContent = 'New Review';
+  $deleteButton.className = 'delete-button hidden';
   formElementsValues.reset();
 });
 $reviewNav.addEventListener('click', () => viewSwap('reviews'));
 $homeNav.addEventListener('click', () => viewSwap('home'));
-//Edit Review Code
+// Edit Review Code
+const $reviewFormHeader = document.querySelector('.review-form-title');
+const $deleteButton = document.querySelector('.delete-button');
+if (!$reviewFormHeader || !$deleteButton)
+  throw new Error('Review form header or delete button query failed!');
 function populateRating(ratingValue) {
   selectedRating = ratingValue;
   if (ratingValue === 1) {
@@ -278,22 +286,61 @@ function populateReview(review) {
   populateRating(review.rating);
 }
 $ul.addEventListener('click', (event) => {
-  let eventTarget = event.target;
-  let elementName = eventTarget.tagName;
-  console.log(elementName);
+  const eventTarget = event.target;
+  const elementName = eventTarget.tagName;
   if (elementName === 'I') {
     const closestLi = eventTarget.closest('li');
     if (closestLi) {
-      let editReview = closestLi.getAttribute('data-review-id');
-      let editableReview = Number(editReview);
+      const editReview = closestLi.getAttribute('data-review-id');
+      const editableReview = Number(editReview);
       for (let i = 0; i < data.reviews.length; i++) {
         if (data.reviews[i].reviewId === editableReview) {
           viewSwap('review-form');
-          let dataReview = data.reviews[i];
+          const dataReview = data.reviews[i];
           data.editing = dataReview;
+          $reviewFormHeader.textContent = 'Edit Review';
+          $deleteButton.className = 'delete-button';
           populateReview(dataReview);
         }
       }
     }
   }
+});
+//Delete a review
+let $dismissModal = document.querySelector('.dismiss-modal');
+let $dialog = document.querySelector('dialog');
+let $deleteReview = document.querySelector('.delete-review');
+if (!$dismissModal) throw new Error('$dismissModal does not exist');
+if (!$dialog) throw new Error('$dialog does not exist');
+if (!$deleteReview) throw new Error('$deleteReview does not exist');
+function openModal() {
+  $dialog?.showModal();
+}
+$deleteButton.addEventListener('click', openModal);
+function dismissModal() {
+  $dialog?.close();
+}
+$dismissModal.addEventListener('click', dismissModal);
+$deleteReview.addEventListener('click', () => {
+  let clickedReview = data.editing?.reviewId;
+  for (let i = 0; i < data.reviews.length; i++) {
+    if (data.reviews[i].reviewId === clickedReview) {
+      data.reviews.splice(i, 1);
+      writeReviews();
+      break;
+    }
+  }
+  const $allLi = document.querySelectorAll('li');
+  if (!$allLi) throw new Error('$allLi query failed!');
+  for (let i = 0; i < $allLi.length; i++) {
+    if (Number($allLi[i].getAttribute('data-review-id')) === clickedReview) {
+      const deleteLi = $allLi[i];
+      deleteLi.remove();
+      break;
+    }
+  }
+  data.editing = null;
+  $dialog?.close();
+  viewSwap('reviews');
+  toggleNoReviews();
 });
