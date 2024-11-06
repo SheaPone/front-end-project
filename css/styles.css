@@ -165,3 +165,11 @@ i {
   float: right;
   background-color: red;
 }
+
+#results-container > img {
+  margin-bottom: 4rem;
+}
+
+#results-container > p {
+  text-align: center;
+}

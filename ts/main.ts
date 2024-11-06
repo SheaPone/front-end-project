@@ -16,13 +16,6 @@ interface Review {
   reviewId: number;
 }
 
-// interface Book {
-// title: string;
-// author: string;
-// photo: string;
-// id: string;
-// }
-
 // Input Event listener for Photo Change
 const $photo = document.querySelector('#photo') as HTMLInputElement;
 const $img = document.querySelector('img') as HTMLImageElement;
@@ -438,7 +431,7 @@ const APIKey = 'AIzaSyCD5-pLWPpEX8hFF-sYzRmkB2jzOujJEEU';
 $searchForm!.addEventListener('submit', async (event: Event): Promise<void> => {
   event.preventDefault();
   const query = $search.value;
-  $homeDialog.innerHTML = '';
+  $resultsContainer.innerHTML = '';
   try {
     const response = await fetch(
       `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&key=${APIKey}`,
@@ -446,16 +439,40 @@ $searchForm!.addEventListener('submit', async (event: Event): Promise<void> => {
     if (!response.ok) {
       throw new Error(`HTTP Error! Status: ${response.status}`);
     }
-    const book = await response.json();
-    console.log(book);
-    // if (book.items) {
-    //  book.items.forEach((item:any) => {
-    //    const bookInfo = item.volumeInfo;
-    // const searchResults: Book = {
-    // title: bookInfo.title,
-    // author: `Author: ${bookInfo.authors.join(', ')}`,
-    //  photo: bookInfo.thumbnail,
-    // id: bookInfo.id,
+    const books = await response.json();
+    if (!books.items || books.items.length === 0) {
+      const $noResults = document.createElement('p');
+      $noResults.textContent = 'No results found.';
+      $resultsContainer.appendChild($noResults);
+      return;
+    }
+    for (let i = 0; i < 3; i++) {
+      const book = books.items[i];
+      const $h3Title = document.createElement('h3');
+      $h3Title.textContent = book.volumeInfo.title;
+      $resultsContainer.appendChild($h3Title);
+
+      const $h4Author = document.createElement('h4');
+      $h4Author.textContent = book.volumeInfo.authors;
+      $resultsContainer.appendChild($h4Author);
+
+      const $imgSearch = document.createElement('img');
+      $imgSearch.src = book.volumeInfo.imageLinks.thumbnail;
+      $resultsContainer.appendChild($imgSearch);
+      console.log(book);
+      $imgSearch.addEventListener('click', () => {
+        viewSwap('review-form');
+        const $formElements = formElementsValues?.elements as FormElements;
+        $formElements.bookTitle.value = book.volumeInfo.title;
+        $formElements.author.value = book.volumeInfo.authors;
+        $formElements.photo.value = book.volumeInfo.imageLinks.thumbnail;
+        $img.src = book.volumeInfo.imageLinks.thumbnail;
+        $homeDialog!.close();
+        $search.value = '';
+        $reviewFormHeader.textContent = 'New Review';
+        $deleteButton.className = 'hidden';
+      });
+    }
   } catch (error) {
     console.log('Error:', error);
   }

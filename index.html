@@ -34,16 +34,21 @@
         <div>
           <form id="search-books">
             <label class="homeSearch" for="search">Search</label>
-            <input type="search" id="search" name="search" data-search />
+            <input
+              type="search"
+              id="search"
+              name="search"
+              placeholder="Search for Book by Title"
+              data-search />
             <button id="search-button">Search</button>
           </form>
         </div>
         <dialog id="home-dialog">
           <h2>Search Results</h2>
+          <div id="results-container"></div>
           <div class="modal-actions">
             <button class="dismiss-modal-search">Cancel</button>
           </div>
-          <div id="results-container"></div>
         </dialog>
       </div>
       <div data-view="review-form" id="review-form" class="view hidden">
