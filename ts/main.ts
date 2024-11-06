@@ -459,7 +459,6 @@ $searchForm!.addEventListener('submit', async (event: Event): Promise<void> => {
       const $imgSearch = document.createElement('img');
       $imgSearch.src = book.volumeInfo.imageLinks.thumbnail;
       $resultsContainer.appendChild($imgSearch);
-      console.log(book);
       $imgSearch.addEventListener('click', () => {
         viewSwap('review-form');
         const $formElements = formElementsValues?.elements as FormElements;

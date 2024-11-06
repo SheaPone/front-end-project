@@ -387,7 +387,7 @@ $searchForm.addEventListener('submit', async (event) => {
       return;
     }
     for (let i = 0; i < 3; i++) {
-      let book = books.items[i];
+      const book = books.items[i];
       const $h3Title = document.createElement('h3');
       $h3Title.textContent = book.volumeInfo.title;
       $resultsContainer.appendChild($h3Title);
@@ -397,7 +397,6 @@ $searchForm.addEventListener('submit', async (event) => {
       const $imgSearch = document.createElement('img');
       $imgSearch.src = book.volumeInfo.imageLinks.thumbnail;
       $resultsContainer.appendChild($imgSearch);
-      console.log(book);
       $imgSearch.addEventListener('click', () => {
         viewSwap('review-form');
         const $formElements = formElementsValues?.elements;
