@@ -68,7 +68,7 @@ function rating(event) {
 }
 $stars.addEventListener('click', rating);
 // Submit Form Event Listener
-const formElementsValues = document.querySelector('form');
+const formElementsValues = document.querySelector('#new-review');
 if (!formElementsValues) throw new Error('formElementsVales query failed');
 function submit(event) {
   event.preventDefault();
@@ -306,10 +306,10 @@ $ul.addEventListener('click', (event) => {
     }
   }
 });
-//Delete a review
-let $dismissModal = document.querySelector('.dismiss-modal');
-let $dialog = document.querySelector('dialog');
-let $deleteReview = document.querySelector('.delete-review');
+// Delete a review
+const $dismissModal = document.querySelector('.dismiss-modal');
+const $dialog = document.querySelector('#delete-modal');
+const $deleteReview = document.querySelector('.delete-review');
 if (!$dismissModal) throw new Error('$dismissModal does not exist');
 if (!$dialog) throw new Error('$dialog does not exist');
 if (!$deleteReview) throw new Error('$deleteReview does not exist');
@@ -322,7 +322,7 @@ function dismissModal() {
 }
 $dismissModal.addEventListener('click', dismissModal);
 $deleteReview.addEventListener('click', () => {
-  let clickedReview = data.editing?.reviewId;
+  const clickedReview = data.editing?.reviewId;
   for (let i = 0; i < data.reviews.length; i++) {
     if (data.reviews[i].reviewId === clickedReview) {
       data.reviews.splice(i, 1);
@@ -344,3 +344,78 @@ $deleteReview.addEventListener('click', () => {
   viewSwap('reviews');
   toggleNoReviews();
 });
+// Open Modal for Search and Search books
+const $homeDialog = document.querySelector('#home-dialog');
+const $resultsContainer = document.querySelector('#results-container');
+const $dismissModalSearch = document.querySelector('.dismiss-modal-search');
+const $search = document.querySelector('#search');
+const $searchForm = document.querySelector('#search-books');
+const $searchButton = document.querySelector('#search-button');
+if (
+  !$search ||
+  !$searchForm ||
+  !$searchButton ||
+  !$homeDialog ||
+  !$dismissModalSearch ||
+  !$resultsContainer
+)
+  throw new Error(
+    '$search or $searchBooks or $searchButton of $homeDialog or $dismissModalSearch or $resultsContainer query failed!',
+  );
+function openSearchModal() {
+  $homeDialog.showModal();
+}
+$searchButton.addEventListener('click', openSearchModal);
+// Search for Books
+const APIKey = 'AIzaSyCD5-pLWPpEX8hFF-sYzRmkB2jzOujJEEU';
+$searchForm.addEventListener('submit', async (event) => {
+  event.preventDefault();
+  const query = $search.value;
+  $resultsContainer.innerHTML = '';
+  try {
+    const response = await fetch(
+      `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&key=${APIKey}`,
+    );
+    if (!response.ok) {
+      throw new Error(`HTTP Error! Status: ${response.status}`);
+    }
+    const books = await response.json();
+    if (!books.items || books.items.length === 0) {
+      const $noResults = document.createElement('p');
+      $noResults.textContent = 'No results found.';
+      $resultsContainer.appendChild($noResults);
+      return;
+    }
+    for (let i = 0; i < 3; i++) {
+      const book = books.items[i];
+      const $h3Title = document.createElement('h3');
+      $h3Title.textContent = book.volumeInfo.title;
+      $resultsContainer.appendChild($h3Title);
+      const $h4Author = document.createElement('h4');
+      $h4Author.textContent = book.volumeInfo.authors;
+      $resultsContainer.appendChild($h4Author);
+      const $imgSearch = document.createElement('img');
+      $imgSearch.src = book.volumeInfo.imageLinks.thumbnail;
+      $resultsContainer.appendChild($imgSearch);
+      $imgSearch.addEventListener('click', () => {
+        viewSwap('review-form');
+        const $formElements = formElementsValues?.elements;
+        $formElements.bookTitle.value = book.volumeInfo.title;
+        $formElements.author.value = book.volumeInfo.authors;
+        $formElements.photo.value = book.volumeInfo.imageLinks.thumbnail;
+        $img.src = book.volumeInfo.imageLinks.thumbnail;
+        $homeDialog.close();
+        $search.value = '';
+        $reviewFormHeader.textContent = 'New Review';
+        $deleteButton.className = 'hidden';
+      });
+    }
+  } catch (error) {
+    console.log('Error:', error);
+  }
+});
+// Close Modal on cancel button click
+function closeSearchModal() {
+  $homeDialog.close();
+}
+$dismissModalSearch?.addEventListener('click', closeSearchModal);
