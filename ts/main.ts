@@ -427,11 +427,14 @@ function openSearchModal(): void {
 $searchButton!.addEventListener('click', openSearchModal);
 
 // Search for Books
+const $waiting = document.querySelector('#waiting');
+if (!$waiting) throw new Error('$waiting query failed!');
 const APIKey = 'AIzaSyCD5-pLWPpEX8hFF-sYzRmkB2jzOujJEEU';
 $searchForm!.addEventListener('submit', async (event: Event): Promise<void> => {
   event.preventDefault();
   const query = $search.value;
   $resultsContainer.innerHTML = '';
+  $waiting.textContent = 'Searching...';
   try {
     const response = await fetch(
       `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&key=${APIKey}`,
@@ -440,6 +443,7 @@ $searchForm!.addEventListener('submit', async (event: Event): Promise<void> => {
       throw new Error(`HTTP Error! Status: ${response.status}`);
     }
     const books = await response.json();
+    $waiting.textContent = '';
     if (!books.items || books.items.length === 0) {
       const $noResults = document.createElement('p');
       $noResults.textContent = 'No results found.';

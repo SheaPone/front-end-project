@@ -367,11 +367,14 @@ function openSearchModal() {
 }
 $searchButton.addEventListener('click', openSearchModal);
 // Search for Books
+const $waiting = document.querySelector('#waiting');
+if (!$waiting) throw new Error('$waiting query failed!');
 const APIKey = 'AIzaSyCD5-pLWPpEX8hFF-sYzRmkB2jzOujJEEU';
 $searchForm.addEventListener('submit', async (event) => {
   event.preventDefault();
   const query = $search.value;
   $resultsContainer.innerHTML = '';
+  $waiting.textContent = 'Searching...';
   try {
     const response = await fetch(
       `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&key=${APIKey}`,
@@ -380,6 +383,7 @@ $searchForm.addEventListener('submit', async (event) => {
       throw new Error(`HTTP Error! Status: ${response.status}`);
     }
     const books = await response.json();
+    $waiting.textContent = '';
     if (!books.items || books.items.length === 0) {
       const $noResults = document.createElement('p');
       $noResults.textContent = 'No results found.';
@@ -426,7 +430,7 @@ function closeSearchModal() {
   $homeDialog.close();
 }
 $dismissModalSearch?.addEventListener('click', closeSearchModal);
-//Search through reviews
+// Search through reviews
 const $searchReviews = document.querySelector('[data-search]');
 if (!$searchReviews) throw new Error('$searchReviews query failed!');
 function searchReviews(event) {
