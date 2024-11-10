@@ -399,6 +399,13 @@ $searchForm.addEventListener('submit', async (event) => {
       $resultsContainer.appendChild($imgSearch);
       $imgSearch.addEventListener('click', () => {
         viewSwap('review-form');
+        formElementsValues.reset();
+        $one.className = 'fa-regular fa-star';
+        $two.className = 'fa-regular fa-star';
+        $three.className = 'fa-regular fa-star';
+        $four.className = 'fa-regular fa-star';
+        $five.className = 'fa-regular fa-star';
+        selectedRating = 0;
         const $formElements = formElementsValues?.elements;
         $formElements.bookTitle.value = book.volumeInfo.title;
         $formElements.author.value = book.volumeInfo.authors;
@@ -419,3 +426,30 @@ function closeSearchModal() {
   $homeDialog.close();
 }
 $dismissModalSearch?.addEventListener('click', closeSearchModal);
+//Search through reviews
+const $searchReviews = document.querySelector('[data-search]');
+if (!$searchReviews) throw new Error('$searchReviews query failed!');
+function searchReviews(event) {
+  const eventTarget = event.target;
+  const value = eventTarget.value.toLowerCase();
+  const $allLi = document.querySelectorAll('li');
+  if (!$allLi) throw new Error('$allLi query failed');
+  for (let i = 0; i < $allLi.length; i++) {
+    const reviewId = Number($allLi[i].getAttribute('data-review-id'));
+    for (let index = 0; index < data.reviews.length; index++) {
+      if (data.reviews[index].reviewId === reviewId) {
+        if (
+          data.reviews[index].bookTitle.toLowerCase().includes(value) ||
+          data.reviews[index].review.toLowerCase().includes(value) ||
+          data.reviews[index].author.toLowerCase().includes(value)
+        ) {
+          $allLi[i].style.display = '';
+        } else {
+          $allLi[i].style.display = 'none';
+        }
+        break;
+      }
+    }
+  }
+}
+$searchReviews.addEventListener('input', searchReviews);
