@@ -1,6 +1,7 @@
 .header-container {
-  background-image: url('/images/download.png');
+  background-image: url('../images/download.png');
   height: 5rem;
+  font-weight: bold;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -90,6 +91,7 @@ button {
 .reviews-header {
   font-family: 'Shadows into light', sans-serif;
   margin-left: 0.75rem;
+  margin-right: 1rem;
   font-size: 1.5rem;
 }
 
@@ -172,4 +174,15 @@ i {
 
 #results-container > p {
   text-align: center;
+}
+
+.search-reviews-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+#search-reviews {
+  width: 12rem;
+  margin-right: 1rem;
 }

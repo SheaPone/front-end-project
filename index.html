@@ -38,8 +38,7 @@
               type="search"
               id="search"
               name="search"
-              placeholder="Search for Book by Title"
-              data-search />
+              placeholder="Search for Book by Title" />
             <button id="search-button">Search</button>
           </form>
         </div>
@@ -103,7 +102,15 @@
         </div>
       </dialog>
       <div data-view="reviews" id="reviews" class="view">
-        <h1 class="reviews-header">My Reviews</h1>
+        <div class="search-reviews-container">
+          <h1 class="reviews-header">My Reviews</h1>
+          <input
+            type="search"
+            id="search-reviews"
+            name="search"
+            placeholder="Search through your reviews"
+            data-search />
+        </div>
         <p class="reviews-message no">No reviews have been submitted :(</p>
         <ul></ul>
       </div>
