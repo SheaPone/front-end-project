@@ -204,3 +204,12 @@ i {
 .navigate-new > a {
   margin-left: -12rem;
 }
+
+.fa-arrow-right-long {
+  float: right;
+  cursor: pointer;
+}
+
+.fa-arrow-left-long {
+  cursor: pointer;
+}
