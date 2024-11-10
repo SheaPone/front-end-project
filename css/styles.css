@@ -22,12 +22,14 @@
 }
 
 #new-button {
-  margin-right: 0.1rem;
-  padding: 2px 4px;
+  padding: 0.4rem 0.75rem;
+  text-decoration: none;
+  border: black;
+  font-weight: bold;
   border-radius: 5%;
-  background-color: deeppink;
-  color: black;
-  text-transform: uppercase;
+  background-color: rgb(229, 66, 164);
+  color: white;
+  font-size: 1rem;
 }
 
 .column-full > h1 {
@@ -172,6 +174,11 @@ i {
   margin-bottom: 4rem;
 }
 
+.navigate-new > p {
+  margin-left: -6rem;
+  margin-bottom: 7rem;
+}
+
 #results-container > p {
   text-align: center;
 }
@@ -185,4 +192,15 @@ i {
 #search-reviews {
   width: 12rem;
   margin-right: 1rem;
+}
+
+.navigate-new {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 7rem;
+}
+
+.navigate-new > a {
+  margin-left: -12rem;
 }
