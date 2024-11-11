@@ -213,3 +213,7 @@ i {
 .fa-arrow-left-long {
   cursor: pointer;
 }
+
+#home-dialog {
+  width: 50%;
+}
