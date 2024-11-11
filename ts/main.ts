@@ -402,6 +402,7 @@ $deleteReview.addEventListener('click', () => {
 
 // Open Modal for Search and Search books
 const $homeDialog = document.querySelector('#home-dialog') as HTMLDialogElement;
+const $pageArrows = document.querySelector('#page-arrows');
 const $resultsContainer = document.querySelector(
   '#results-container',
 ) as HTMLElement;
@@ -415,10 +416,11 @@ if (
   !$searchButton ||
   !$homeDialog ||
   !$dismissModalSearch ||
-  !$resultsContainer
+  !$resultsContainer ||
+  !$pageArrows
 )
   throw new Error(
-    '$search or $searchBooks or $searchButton of $homeDialog or $dismissModalSearch or $resultsContainer query failed!',
+    '$search or $searchBooks or $searchButton of $homeDialog or $dismissModalSearch or $resultsContainer or $pageArrows query failed!',
   );
 
 function openSearchModal(): void {
@@ -427,26 +429,35 @@ function openSearchModal(): void {
 $searchButton!.addEventListener('click', openSearchModal);
 
 // Search for Books
+const $waiting = document.querySelector('#waiting');
+if (!$waiting) throw new Error('$waiting query failed!');
 const APIKey = 'AIzaSyCD5-pLWPpEX8hFF-sYzRmkB2jzOujJEEU';
 $searchForm!.addEventListener('submit', async (event: Event): Promise<void> => {
   event.preventDefault();
   const query = $search.value;
   $resultsContainer.innerHTML = '';
+  $pageArrows.innerHTML = '';
+  $waiting.textContent = 'Searching...';
   try {
     const response = await fetch(
-      `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&key=${APIKey}`,
+      `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&maxResults=40&key=${APIKey}`,
     );
     if (!response.ok) {
       throw new Error(`HTTP Error! Status: ${response.status}`);
     }
     const books = await response.json();
+    $waiting.textContent = '';
     if (!books.items || books.items.length === 0) {
       const $noResults = document.createElement('p');
       $noResults.textContent = 'No results found.';
       $resultsContainer.appendChild($noResults);
       return;
     }
-    for (let i = 0; i < 3; i++) {
+    const $nextPage = document.createElement('i');
+    $nextPage.className = 'fa-solid fa-arrow-right-long';
+    $pageArrows.appendChild($nextPage);
+
+    for (let i = 0; i < 20; i++) {
       const book = books.items[i];
       const $h3Title = document.createElement('h3');
       $h3Title.textContent = book.volumeInfo.title;
@@ -457,8 +468,34 @@ $searchForm!.addEventListener('submit', async (event: Event): Promise<void> => {
       $resultsContainer.appendChild($h4Author);
 
       const $imgSearch = document.createElement('img');
-      $imgSearch.src = book.volumeInfo.imageLinks.thumbnail;
+      $imgSearch.src =
+        book.volumeInfo.imageLinks?.thumbnail ||
+        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSj2mL7JKp9TKfgH9eDUV4FP0Jasm1FLRaydg&s';
       $resultsContainer.appendChild($imgSearch);
+
+      $nextPage.addEventListener('click', () => {
+        $resultsContainer.innerHTML = '';
+        $pageArrows.innerHTML = '';
+        if ($dialog) {
+          $dialog.scrollTop = 0;
+        }
+        for (let i = 20; i < 40; i++) {
+          const book = books.items[i];
+          const $h3Title = document.createElement('h3');
+          $h3Title.textContent = book.volumeInfo.title;
+          $resultsContainer.appendChild($h3Title);
+
+          const $h4Author = document.createElement('h4');
+          $h4Author.textContent = book.volumeInfo.authors;
+          $resultsContainer.appendChild($h4Author);
+
+          const $imgSearch = document.createElement('img');
+          $imgSearch.src =
+            book.volumeInfo.imageLinks?.thumbnail ||
+            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSj2mL7JKp9TKfgH9eDUV4FP0Jasm1FLRaydg&s';
+          $resultsContainer.appendChild($imgSearch);
+        }
+      });
       $imgSearch.addEventListener('click', () => {
         viewSwap('review-form');
         formElementsValues.reset();
@@ -471,8 +508,12 @@ $searchForm!.addEventListener('submit', async (event: Event): Promise<void> => {
         const $formElements = formElementsValues?.elements as FormElements;
         $formElements.bookTitle.value = book.volumeInfo.title;
         $formElements.author.value = book.volumeInfo.authors;
-        $formElements.photo.value = book.volumeInfo.imageLinks.thumbnail;
-        $img.src = book.volumeInfo.imageLinks.thumbnail;
+        $formElements.photo.value =
+          book.volumeInfo.imageLinks?.thumbnail ||
+          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSj2mL7JKp9TKfgH9eDUV4FP0Jasm1FLRaydg&s';
+        $img.src =
+          book.volumeInfo.imageLinks?.thumbnail ||
+          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSj2mL7JKp9TKfgH9eDUV4FP0Jasm1FLRaydg&s';
         $homeDialog!.close();
         $search.value = '';
         $reviewFormHeader.textContent = 'New Review';

@@ -26,7 +26,6 @@
         <h1>Shelf Reflection</h1>
         <a href="#" id="home-nav">Home</a>
         <a href="#" id="review-nav">My Reviews</a>
-        <a href="#" id="new-button">New</a>
       </div>
     </header>
     <main>
@@ -38,13 +37,19 @@
               type="search"
               id="search"
               name="search"
-              placeholder="Search for Book by Title" />
+              placeholder="Search for book by title" />
             <button id="search-button">Search</button>
           </form>
         </div>
+        <div class="navigate-new">
+          <p>Can't find the book you're looking for? Click here!</p>
+          <a href="#" id="new-button">New</a>
+        </div>
         <dialog id="home-dialog">
           <h2>Search Results</h2>
+          <p id="waiting"></p>
           <div id="results-container"></div>
+          <div id="page-arrows"></div>
           <div class="modal-actions">
             <button class="dismiss-modal-search">Cancel</button>
           </div>
