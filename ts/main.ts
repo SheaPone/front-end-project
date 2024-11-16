@@ -573,8 +573,9 @@ const $summaryContainer = document.querySelector('.summary-container');
 const $closeSummaryModal = document.querySelector('.close-summary-modal');
 if (!$summaryDialog || !$summaryContainer || !$closeSummaryModal)
   throw new Error('Summary query failed!');
-const apiKey =
-  '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';
+const apiKey = prompt(
+  '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',
+);
 const apiUrl = 'https://api.openai.com/v1/chat/completions';
 
 $ul.addEventListener(
@@ -589,7 +590,7 @@ $ul.addEventListener(
         const clickedBook = Number(bookReview);
         for (let i = 0; i < data.reviews.length; i++) {
           if (data.reviews[i].reviewId === clickedBook) {
-            const prompt = `Provide a brief summary of ${data.reviews[i].bookTitle}`;
+            const clientPrompt = `Provide a brief summary of ${data.reviews[i].bookTitle}`;
             try {
               const response = await fetch(apiUrl, {
                 method: 'POST',
@@ -599,7 +600,7 @@ $ul.addEventListener(
                 },
                 body: JSON.stringify({
                   model: 'gpt-3.5-turbo',
-                  messages: [{ role: 'user', content: prompt }],
+                  messages: [{ role: 'user', content: clientPrompt }],
                 }),
               });
               if (!response.ok) {
