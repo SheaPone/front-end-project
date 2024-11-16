@@ -573,7 +573,7 @@ const $summaryContainer = document.querySelector('.summary-container');
 const $closeSummaryModal = document.querySelector('.close-summary-modal');
 if (!$summaryDialog || !$summaryContainer || !$closeSummaryModal)
   throw new Error('Summary query failed!');
-const apiKey = prompt('Enter API key');
+const apiKey = prompt('Enter your API key');
 const apiUrl = 'https://api.openai.com/v1/chat/completions';
 
 $ul.addEventListener(
