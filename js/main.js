@@ -157,6 +157,9 @@ function renderReview(review) {
   const $h4 = document.createElement('h4');
   $h4.textContent = review.author;
   $div2.appendChild($h4);
+  const $chatBot = document.createElement('i');
+  $chatBot.className = 'fa-solid fa-message';
+  $h4.appendChild($chatBot);
   for (let i = 0; i < 5; i++) {
     const $star = document.createElement('i');
     $star.className =
@@ -287,8 +290,8 @@ function populateReview(review) {
 }
 $ul.addEventListener('click', (event) => {
   const eventTarget = event.target;
-  const elementName = eventTarget.tagName;
-  if (elementName === 'I') {
+  const elementName = eventTarget.className;
+  if (elementName === 'fa-solid fa-pencil') {
     const closestLi = eventTarget.closest('li');
     if (closestLi) {
       const editReview = closestLi.getAttribute('data-review-id');
@@ -490,3 +493,54 @@ function searchReviews(event) {
   }
 }
 $searchReviews.addEventListener('input', searchReviews);
+// AI summary code
+const $summaryDialog = document.querySelector('.summary-dialog');
+const $summaryContainer = document.querySelector('.summary-container');
+const $closeSummaryModal = document.querySelector('.close-summary-modal');
+if (!$summaryDialog || !$summaryContainer || !$closeSummaryModal)
+  throw new Error('Summary query failed!');
+const apiKey = prompt('Enter your API key');
+const apiUrl = 'https://api.openai.com/v1/chat/completions';
+$ul.addEventListener('click', async function AISummary(event) {
+  const eventTarget = event.target;
+  const className = eventTarget.className;
+  if (className === 'fa-solid fa-message') {
+    const closestLi = eventTarget.closest('li');
+    if (closestLi) {
+      const bookReview = closestLi.getAttribute('data-review-id');
+      const clickedBook = Number(bookReview);
+      for (let i = 0; i < data.reviews.length; i++) {
+        if (data.reviews[i].reviewId === clickedBook) {
+          const clientPrompt = `Provide a brief summary of ${data.reviews[i].bookTitle}`;
+          try {
+            const response = await fetch(apiUrl, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${apiKey}`,
+              },
+              body: JSON.stringify({
+                model: 'gpt-3.5-turbo',
+                messages: [{ role: 'user', content: clientPrompt }],
+              }),
+            });
+            if (!response.ok) {
+              throw new Error(
+                `Error: ${response.status} ${response.statusText}`,
+              );
+            }
+            const summary = await response.json();
+            const summaryContent = summary.choices[0].message.content;
+            $summaryContainer.textContent = summaryContent;
+            $summaryDialog.showModal();
+            $closeSummaryModal.addEventListener('click', () => {
+              $summaryDialog.close();
+            });
+          } catch {
+            console.error('Failed to retrieve AI summary:', Error);
+          }
+        }
+      }
+    }
+  }
+});

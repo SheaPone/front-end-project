@@ -90,6 +90,10 @@ button {
   font-size: 1rem;
 }
 
+#review-nav {
+  margin-right: 1rem;
+}
+
 .reviews-header {
   font-family: 'Shadows into light', sans-serif;
   margin-left: 0.75rem;
@@ -146,6 +150,7 @@ i {
 .fa-pencil {
   color: rgb(255, 86, 190);
   float: right;
+  margin-right: 1rem;
 }
 
 #search-button {
@@ -215,5 +220,11 @@ i {
 }
 
 #home-dialog {
-  width: 50%;
+  width: 80%;
+}
+
+.fa-message {
+  float: right;
+  margin-top: 1rem;
+  margin-right: 1rem;
 }
